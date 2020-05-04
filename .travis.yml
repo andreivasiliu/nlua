@@ -1,6 +1,30 @@
 language: rust
-rust:
-  - stable
+
+rust: stable
+
+os:
+  - linux
+  - osx
+
 cache: cargo
+
 script:
   - cargo test --verbose
+  - cargo build --release
+
+before_deploy:
+  - mv target/release/nlua .
+  - tar -zcvf "nlua-${TRAVIS_OS_NAME}.tar.gz" nlua
+
+deploy:
+  provider: releases
+
+  api_key: $GITHUB_API_KEY
+
+  file: "nlua-${TRAVIS_OS_NAME}.tar.gz"
+
+  on:
+    repo: andreivasiliu/nlua
+
+  draft: true
+  skip_cleanup: false
