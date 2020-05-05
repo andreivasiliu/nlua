@@ -5,26 +5,45 @@ rust: stable
 os:
   - linux
   - osx
+  - windows
 
 cache: cargo
 
 script:
   - cargo test --verbose
-  - cargo build --release
 
-before_deploy:
-  - mv target/release/nlua .
-  - tar -zcvf "nlua-${TRAVIS_OS_NAME}.tar.gz" nlua
+_deploy_settings: &deploy_settings
+  script:
+    - cargo build --release
+  before_deploy:
+    - mv "target/release/$EXE_FILE" .
+    - tar -zcvf "$DEPLOY_FILE" "$EXE_FILE"
+  deploy:
+    provider: releases
+    file: "$DEPLOY_FILE"
 
-deploy:
-  provider: releases
+    api_key: $GITHUB_API_KEY
 
-  api_key: $GITHUB_API_KEY
+    on:
+      repo: andreivasiliu/nlua
 
-  file: "nlua-${TRAVIS_OS_NAME}.tar.gz"
+    draft: true
+    skip_cleanup: true
 
-  on:
-    repo: andreivasiliu/nlua
-
-  draft: true
-  skip_cleanup: false
+jobs:
+  include:
+    - stage: deploy
+      name: deploy linux
+      os: linux
+      env: EXE_FILE="nlua" DEPLOY_FILE="nlua-${TRAVIS_OS_NAME}.tar.gz"
+      <<: *deploy_settings
+    - stage: deploy
+      name: deploy osx
+      os: osx
+      env: EXE_FILE="nlua" DEPLOY_FILE="nlua-${TRAVIS_OS_NAME}.tar.gz"
+      <<: *deploy_settings
+    - stage: deploy
+      name: deploy windows
+      os: windows
+      env: EXE_FILE="nlua.exe" DEPLOY_FILE="nlua-${TRAVIS_OS_NAME}.tar.gz"
+      <<: *deploy_settings
