@@ -8,9 +8,9 @@ checksum = "c3d87b23d6a92cd03af510a5ade527033f6aa6fa92161e2d5863a907d4c5e31d"
 
 [[package]]
 name = "hlua"
-version = "0.3.1"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "943be6896e8b77886a45a0fbb823efa6550a17cf01a8745a8a24435c117144ea"
+checksum = "ed9db71fff2e55b83d24bbbdd9ad13f0d1ff79bc265f544370f39ee0825d54e4"
 dependencies = [
  "libc",
  "lua52-sys",
